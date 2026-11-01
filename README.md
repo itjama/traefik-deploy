@@ -6,8 +6,8 @@ presmerovanie HTTP → HTTPS. Zvonku sú otvorené iba porty 80 a 443 tohto kont
 | Aplikácia | Doména | Repo | Priečinok na VPS |
 |---|---|---|---|
 | Traefik | – | `traefik-deploy` | `/opt/traefik` |
-| Hypergrid | `hypergrid.app.iteo.com` | `hypergird-deploy` | `/opt/hypergrid` |
-| Spolu | `spolu.app.iteo.com` | `household-deploy` | `/opt/household-deploy` (existujúci) |
+| Hypergrid | `hypergrid.app.iteo.sk` | `hypergird-deploy` | `/opt/hypergrid` |
+| Spolu | `spolu.app.iteo.sk` | `household-deploy` | `/opt/household-deploy` (existujúci) |
 
 Aplikácia sa pripojí tak, že jej webová služba je v externej sieti `proxy` a má labely:
 
@@ -26,8 +26,8 @@ labels:
 ## Ručné kroky (Majo)
 
 ### 1. DNS na Websupporte
-V zóne `iteo.com` pridať záznam `A`, názov `*.app`, hodnota = IP adresa VPS. Ak má VPS IPv6, pridať aj `AAAA`.
-Overiť: `dig +short hypergrid.app.iteo.com` a `dig +short spolu.app.iteo.com` vrátia IP VPS.
+V zóne `iteo.sk` pridať záznam `A`, názov `*.app`, hodnota = IP adresa VPS. Ak má VPS IPv6, pridať aj `AAAA`.
+Overiť: `dig +short hypergrid.app.iteo.sk` a `dig +short spolu.app.iteo.sk` vrátia IP VPS.
 
 ### 2. Firewall
 Povoliť iba porty 22, 80 a 443 (`ufw` aj firewall v paneli poskytovateľa VPS).
@@ -43,7 +43,7 @@ docker network create proxy
 
 # Spolu — existujúci priečinok a dáta (projekt "household-deploy", volume sa nemenia)
 cd /opt/household-deploy && git pull
-nano .env                                  # DOMAIN=spolu.app.iteo.com
+nano .env                                  # DOMAIN=spolu.app.iteo.sk
 ./backup.sh db                             # záloha pred zmenou
 ./deploy.sh                                # odstráni starý kontajner caddy (--remove-orphans)
 
@@ -59,8 +59,8 @@ cd /opt/hypergrid && cp .env.example .env  # doplniť hodnoty
 Po overení zmazať nepoužívané volume Caddy: `docker volume rm household-deploy_caddy_data household-deploy_caddy_config`.
 
 ### 4. Overenie
-- Otvoriť `https://hypergrid.app.iteo.com` a `https://spolu.app.iteo.com` — platný certifikát.
-- `curl -sI http://spolu.app.iteo.com | head -3` → presmerovanie na `https://`.
+- Otvoriť `https://hypergrid.app.iteo.sk` a `https://spolu.app.iteo.sk` — platný certifikát.
+- `curl -sI http://spolu.app.iteo.sk | head -3` → presmerovanie na `https://`.
 - Pri problémoch: `cd /opt/traefik && docker compose logs traefik --tail=100`
   (chyby ACME = DNS ešte nesmeruje na VPS alebo je zatvorený port 80).
 
